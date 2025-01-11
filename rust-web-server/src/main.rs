@@ -1,13 +1,13 @@
-struct Server{
-    address:String,
-    port: i32
-}
+mod server;
+mod http;
+use server::Server;
 
-impl Server{
-    fn new(s:String)->Server{
-        Server{address:s,port:p}
-    }
-}
+use http::method::Method;
+use http::request::Request;
+
 fn main() {
-        let mut s = Server::new(String::from("127.0.0.1:8080"));
+    let s = Server::new(String::from("127.0.0.1:8080"));
+    s.run();
+    let r = Request{path:String::from("Path"),query:None, method:Method::GET};
+
 }
