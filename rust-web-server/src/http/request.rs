@@ -5,6 +5,7 @@ use std::error::Error;
 use std::fmt::{Result as FmtResult, Display, Formatter,Debug};
 use std::str;
 use std::str::Utf8Error;
+#[derive(Debug)]
 pub struct Request<'buf>{
     pub path: &'buf str,
     pub query_string: Option<QueryString<'buf>>,
@@ -17,7 +18,8 @@ impl <'buf>TryFrom<&'buf [u8]> for Request<'buf> {
         let (method,request) = get_next_words(request).ok_or(ParseError::InvalidRequest)?;
         let (mut path, request) = get_next_words(request).ok_or(ParseError::InvalidRequest)?;
         let (protocol,_) = get_next_words(request).ok_or(ParseError::InvalidRequest)?;
-        if protocol != "Http:1.1"{
+        println!("Protocol = {}",protocol);
+        if protocol != "HTTP/1.1"{
                 return Err(ParseError::InvalidProtocol)
         }
         let method:Method = method.parse()?;
@@ -57,7 +59,7 @@ impl ParseError{
                 Self::InvalidRequest=>"Invalid Request",
                 Self::InvalidEncoding=>"Invalid Encoding",
                 Self::InvalidMethod=>"Invalid Method",
-                Self::InvalidProtocol=>"Invalid Protocol",
+                Self::InvalidProtocol=>"Invalid Protocol1",
             }
     }
 

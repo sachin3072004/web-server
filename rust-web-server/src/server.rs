@@ -1,7 +1,8 @@
-use crate::http::request::Request;
-use std::io::Read;
+use crate::http::{Request,Response, StatusCode};
+use std::io::{Read,Write};
 use std::net::{TcpListener};    
 use std::convert::TryFrom;
+#[derive(Debug)]
 pub struct Server{
         address: String,
     }
@@ -12,8 +13,6 @@ pub struct Server{
         }
 
         pub fn run(&self){
-            let t = (1,2,3,"sachin");
-            println!("{:?} {:?}",t.0,t.1);
             println!("Listening {}",self.address);
             let listener = TcpListener::bind(self.address.as_str()).unwrap();
             loop {
@@ -23,9 +22,19 @@ pub struct Server{
                         match stream.read(&mut buffer){
                             Ok(_)=>{
                                 println!("Received a request:{}",String::from_utf8_lossy(&buffer));
-                                match Request::try_from(&buffer[..]){
-                                    Ok(request)=>{},
-                                    Err(e)=>{println!("Failed ot parse the request {}",e)}
+                                let response = match Request::try_from(&buffer[..]){
+                                    Ok(request)=>{
+                                        dbg!(request);
+                                        Response::new(StatusCode::Ok, 
+                                                        Some("<h1>It Works!!</h>".to_string())) 
+                                    },
+                                    Err(e)=>{
+                                        Response::new(StatusCode::BadRequest, None)
+
+                                    }
+                                };
+                                if let Err(e) =  response.send(&mut stream){
+                                    println!("Failed to send response");
                                 }
 
                             },
