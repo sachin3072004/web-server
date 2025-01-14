@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 mod server;
 mod http;
 use server::Server;
@@ -8,6 +9,6 @@ use http::request::Request;
 fn main() {
     let s = Server::new(String::from("127.0.0.1:8080"));
     s.run();
-    let r = Request{path:String::from("Path"),query:None, method:Method::GET};
+    let r = Request{path:"Path",query_string:None, method:Method::GET};
 
 }
