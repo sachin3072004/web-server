@@ -19,8 +19,8 @@ impl<'buf> Request<'buf>{
     pub fn method(&self) ->&Method{
         &self.method
     }
-    pub fn query_string(&self) ->&Option<QueryString<'buf>>{
-        &self.query_string()
+    pub fn query_string(&self) ->Option<&QueryString>{
+        &self.query_string().as_ref()
     }
 
 }
